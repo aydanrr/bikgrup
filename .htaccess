@@ -1,0 +1,30 @@
+# BİKGRUP Apache Güvenlik ve SEO Uyumlu URL Rewrite
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /bikgrup/
+
+    # Eğer istenen dosya veya dizin gerçekten varsa doğrudan aç
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Değilse index.php'ye temiz yönlendir
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>
+
+# Güvenlik: Hassas dosyaları dışarıya kapat
+<FilesMatch "\.(sql|log|ini|env|sh|bak)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Dizin listelemeyi kapat
+Options -Indexes
+
+# Güvenlik Başlıkları
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
